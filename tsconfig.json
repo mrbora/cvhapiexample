@@ -1,24 +1,29 @@
 {
   "compilerOptions": {
+    "outDir": "build/dist",
+    "module": "commonjs",
     "target": "ESNext",
-    "lib": [
-      "esnext"
-    ],
+    "lib": [ "dom","es2017"],
+    "sourceMap": true,
     "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
-  "include": [
-    "src",
-    "../../AppData/Local/JetBrains/WebStorm2021.2/javascript/typings/node/14.18.1/node_modules/@types/node/globals.d.ts"
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts"
+  ],
+  "types": [
+    "typePatches"
   ]
 }

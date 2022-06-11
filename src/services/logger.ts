@@ -1,8 +1,8 @@
-import winston, {createLogger, format, transports} from "winston";
+const {createLogger, format, transports} = require("winston");
 
 // make singleton
 class Logger {
-    logger: winston.Logger;
+    logger = null;
 
     constructor() {
         this.logger = createLogger({
@@ -10,16 +10,14 @@ class Logger {
             transports: [new transports.Console({})],
         })
     }
-
-    getLogger() {
-        return this.logger
-    }
+    getLogger(){return this.logger}
 }
 
-export class Singleton extends Logger {
-    static instance: Logger;
+class Singleton extends Logger{
+    static instance;
 
-    static getInstance() {
+
+    static getInstance(){
         if (!this.instance) {
             this.instance = new Logger();
         }
@@ -28,5 +26,6 @@ export class Singleton extends Logger {
 }
 
 
+module.exports = Singleton
 
 

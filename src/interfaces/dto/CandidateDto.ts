@@ -1,4 +1,4 @@
-export interface CandidateInfo {
+export interface CandidateInfoDto {
     name: string;
 }
 
@@ -9,8 +9,8 @@ export interface CandidateExperienceDto {
     title: string
     description: string
 }
-
+export type CandidateExperienceCollectionDTO=CandidateExperienceDto[]
 export interface CandidateDto {
-    candidateInfo: CandidateInfo;
-    candidateExperience: CandidateExperienceDto[];
+    candidateInfo: CandidateInfoDto;
+    candidateExperienceCollection: CandidateExperienceCollectionDTO;
 }
