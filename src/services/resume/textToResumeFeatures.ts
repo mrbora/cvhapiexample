@@ -2,24 +2,54 @@ import {CandidateDto, CandidateExperienceCollectionDTO, CandidateInfoDto} from "
 import nlp from 'compromise'
 import datePlugin from 'compromise-dates'
 
+// enumerate candidate employment history sections based on Months tags
+function getRelativeDatesPosition(currentParagraphPosition: number, resumeDoc: any, arrayOfDatesPositions: number[]): number[] {
+    for (let currLine = currentParagraphPosition + 1; currLine < resumeDoc.document.length; currLine++) {
+
+        resumeDoc.document[currLine].forEach(str => {
+            if (str.tags?.has('Month')) {
+                if (!arrayOfDatesPositions.find(currLineA => currLine === currLineA))
+                    arrayOfDatesPositions.push(currLine)
+            }
+        })
+    }
+    return arrayOfDatesPositions;
+}
+
+// join lines of description
+function getJobDescription(strLine: number, endLine: number, resumeDoc: any) {
+    console.debug(`${strLine} - ${endLine}`);
+    let jobDescription = '';
+    for (let currDescLine = strLine; currDescLine < endLine; currDescLine++) {
+        jobDescription = jobDescription.concat(resumeDoc.sentences(currDescLine).text());
+
+    }
+    return jobDescription
+}
+
+function getCompanyName(sentences: any) {
+    return "";
+}
+
 export function extractFeaturesFromResume(rows): CandidateDto {
     enum ResumeTaxonomy {
         MAX_PER_PERSONAL_INFO = 5,
-        PERSONAL_INFO_START = 0
+        PERSONAL_INFO_START = 0,
+        CANDIDATE_POSITION_REL_TO_DATE = -1
+
     }
 
     let candidateInfo: CandidateInfoDto;
-    let candidateExperience: CandidateExperienceCollectionDTO;
+    let candidateExperience: CandidateExperienceCollectionDTO = [];
 // NLP PART
     let resumeDoc = nlp(Object.values(rows).join(' \n'))
     // let resumeDoc = nlp(Object.values(rows).join(''))
     nlp.plugin(datePlugin)
     resumeDoc.compute('penn')
 
-    let m = resumeDoc.match("HISTORY").docs;
+    // let m = resumeDoc.match("HISTORY").docs;
 
     // @ts-ignore
-    let dates = resumeDoc.dates().get()
     const expectedFeatures = {candidateName: "candidateName", candidateExperience: "candidateExperience"}
     for (const exKey in expectedFeatures) {
         console.log("infeerence for:" + exKey)
@@ -42,16 +72,30 @@ export function extractFeaturesFromResume(rows): CandidateDto {
                     name: candidateName
                 }
                 break
+            // populate candidate experience
             case expectedFeatures.candidateExperience:
-                candidateExperience = [
-                    {
-                        startDate: new Date(),
-                        endDate: new Date(),
-                        companyName: "aaa",
-                        title: "aaaa",
-                        description: "string"
-                    }
-                ]
+                let arrayOfDatesPositions: number[] = [];
+                let currentParagraphPosition: number = <number>(resumeDoc.match("HISTORY").pointer?.at(0)!).at(0)
+                let experienceDateSection = getRelativeDatesPosition(currentParagraphPosition, resumeDoc, arrayOfDatesPositions);
+                for (let i = 0; i < experienceDateSection.length; i++) {
+                    let [companyName, ...dates] = resumeDoc.sentences(experienceDateSection[i]).splitBefore("#Month #Year").out("array")
+                    //dates extraction per the employment section
+
+                    // @ts-ignore
+                    // let employmentDate = nlp(dates.join(' ')).dates().get()
+
+                    candidateExperience.push({
+                        startDate: dates.length==3? dates[0]:nlp(dates.join()).match("#Month #Year").text(),
+                        endDate: dates.length==3 ? dates[2]:'present',
+                        companyName: companyName,
+                        title: resumeDoc.sentences(experienceDateSection[i] - 1).text(),
+                        description: getJobDescription(experienceDateSection[i] + 1,
+                            i == experienceDateSection.length - 1 ? resumeDoc.document.length : experienceDateSection[i + 1] - 1,
+                            resumeDoc)
+
+                    })
+                }
+
                 break
         }
 

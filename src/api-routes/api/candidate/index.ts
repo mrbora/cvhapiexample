@@ -2,7 +2,7 @@
 
 
 import {addCandidateHandler} from "../../handlers/candidate/addCandidateHandler";
-import {pdfToText} from "../../../services/resume/resumePdfToCandidate";
+import {resumeFeaturesExtractor} from "../../../services/resume/resumePdfToCandidate";
 import {CandidateDto} from "../../../interfaces/dto/CandidateDto";
 
 const Joi = require('joi');
@@ -15,7 +15,7 @@ export const plugin = {
                     method: 'GET',
                     path: '/candidate/{assetId*}',
                     handler: async function (request, h) {
-                        let result:CandidateDto=await pdfToText("c:\\tmp\\cv.pdf")
+                        let result:CandidateDto=await resumeFeaturesExtractor("c:\\tmp\\cv.pdf")
                         const response = h.response(JSON.stringify(result));
                         response.type("application/json");
                         return response;
