@@ -21,4 +21,5 @@ http://localhost:3305/documentation
 
 demo: running on http://164.90.144.187:3305/documentation
 
-For python implementation: pdfminer.rainbow checked and performed great out of the box
+For possible python implementation consider using: pdfminer.rainbow checked and performed great out of the box
+
