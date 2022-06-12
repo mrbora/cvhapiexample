@@ -12,8 +12,12 @@ NLP based on Compromise NLP solution
 to start: 
 
 npm install
+
 npm start
 
+swagger url: 
+
+http://localhost:3305/documentation
 
 demo: running on http://164.90.144.187:3305/documentation
 
