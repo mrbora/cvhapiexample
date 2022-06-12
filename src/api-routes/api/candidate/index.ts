@@ -1,7 +1,7 @@
 'use strict'
 
 
-import {resumeFeaturesExtractor} from "../../../services/resume/resumePdfToCandidate";
+import {resumeFeaturesExtractor} from "../../../services/resume/resumePdfToText";
 import {CandidateDto} from "../../../interfaces/dto/CandidateDto";
 import path from "path";
 import * as os from "os";
@@ -17,7 +17,7 @@ export const plugin = {
                     method: 'GET',
                     path: '/candidate/demo',
                     handler: async function (request, h) {
-                        let result:CandidateDto=await resumeFeaturesExtractor("c:\\tmp\\cv.pdf")
+                        let result:CandidateDto=await resumeFeaturesExtractor(path.join(path.dirname(require.main!.filename),'example', 'cv.pdf'))
                         const response = h.response(JSON.stringify(result));
                         response.type("application/json");
                         return response;

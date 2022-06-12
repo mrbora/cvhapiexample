@@ -87,7 +87,7 @@ export function extractFeaturesFromResume(rows): CandidateDto {
                     candidateExperience.push({
                         startDate: dates.length==3? dates[0]:nlp(dates.join()).match("#Month #Year").text(),
                         endDate: dates.length==3 ? dates[2]:'present',
-                        companyName: companyName,
+                        companyName: companyName.slice(0, -2), // clean 2 last trash chars
                         title: resumeDoc.sentences(experienceDateSection[i] - 1).text(),
                         description: getJobDescription(experienceDateSection[i] + 1,
                             i == experienceDateSection.length - 1 ? resumeDoc.document.length : experienceDateSection[i + 1] - 1,
