@@ -11,7 +11,7 @@ export const serverAuthConfig: ServerAuthConfig={
 }
 export const serverOptions: ServerOptions = {
     address: "0.0.0.0",
-    port: tls ? 8303 : 3303,
+    port: tls ? 8305 : 3305,
     tls: !tls ? tls : {
 
         key: fs.readFileSync(path.join(__dirname, '../ssl/server.key'), 'utf8'),

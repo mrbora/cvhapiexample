@@ -3,8 +3,8 @@ export interface CandidateInfoDto {
 }
 
 export interface CandidateExperienceDto {
-    startDate: Date
-    endDate: Date
+    startDate: string
+    endDate: string
     companyName: string
     title: string
     description: string

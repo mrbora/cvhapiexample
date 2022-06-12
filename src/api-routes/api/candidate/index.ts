@@ -1,9 +1,11 @@
 'use strict'
 
 
-import {addCandidateHandler} from "../../handlers/candidate/addCandidateHandler";
 import {resumeFeaturesExtractor} from "../../../services/resume/resumePdfToCandidate";
 import {CandidateDto} from "../../../interfaces/dto/CandidateDto";
+import path from "path";
+import * as os from "os";
+import * as fs from "fs";
 
 const Joi = require('joi');
 
@@ -13,7 +15,7 @@ export const plugin = {
             server.route(
                 {
                     method: 'GET',
-                    path: '/candidate/{assetId*}',
+                    path: '/candidate/demo',
                     handler: async function (request, h) {
                         let result:CandidateDto=await resumeFeaturesExtractor("c:\\tmp\\cv.pdf")
                         const response = h.response(JSON.stringify(result));
@@ -28,35 +30,49 @@ export const plugin = {
             server.route(
                 {
                     method: 'POST',
-                    path: '/candidate/add-candidate',
-                    handler: addCandidateHandler,
+                    path: '/candidate/upload-candidate-resume',
+                    handler: async function (request, h) {
+                        const file=request.payload['file'];
+                        const tempPath = path.join(os.tmpdir(), file.hapi.filename);
+                        const handleFileUpload = () => {
+                            return new Promise((resolve, reject) => {
+                                try {
+                                    fs.writeFileSync(tempPath, file._data)
+                                } catch (e) {
+                                    reject(e)
+                                }
+                                return resolve("saved successfully")
+                            })
+                        }
+                        let result:CandidateDto=await handleFileUpload().then(()=>resumeFeaturesExtractor(tempPath)).catch(e=> {throw new Error(e)})
+                        const response = h.response(JSON.stringify(result));
+                        response.type("application/json");
+                        return response;
+                    },
 
                     options: {
                         cors: true,
                         auth: false,
                         tags: ['candidate', 'api', 'getAssetInfo'],
-                        description: "provide information on asset state",
-                        notes: ["asset state and metadata"],
+                        description: "upload resume for NLP processing ",
+                        notes: ["supported format: PDF"],
                         plugins: {
                             'hapi-swagger': {
                                 payloadType: 'form'
+
                             },
                         },
                         validate: {
-                            payload: Joi.object({
-                                licensePlate: Joi.string().max(10).required().description("car license plate")
-                            }),
+                            payload: Joi.object({file:Joi.any()?.meta({swaggerType:'file'}).required()}),
                         },
-                        // response: {
-                        //     // schema: {},
-                        //     // schema: Joi.object().tailor("AssetCarModel"),
-                        //
-                        //     status:
-                        //         {
-                        //             200: ["OK"]
-                        //         }
-                        //
-                        // }
+                        payload: {
+                            maxBytes: 2048576,
+                            parse: true,
+                            multipart: {
+                                output: 'stream'
+                            },
+                        },
+                      
                     }
 
 
