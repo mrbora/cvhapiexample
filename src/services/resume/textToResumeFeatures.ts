@@ -1,6 +1,5 @@
 import {CandidateDto, CandidateExperienceCollectionDTO, CandidateInfoDto} from "../../interfaces/dto/CandidateDto";
 import nlp from 'compromise'
-import datePlugin from 'compromise-dates'
 
 // enumerate candidate employment history sections based on Months tags
 function getRelativeDatesPosition(currentParagraphPosition: number, resumeDoc: any, arrayOfDatesPositions: number[]): number[] {
@@ -44,7 +43,6 @@ export function extractFeaturesFromResume(rows): CandidateDto {
 // NLP PART
     let resumeDoc = nlp(Object.values(rows).join(' \n'))
     // let resumeDoc = nlp(Object.values(rows).join(''))
-    nlp.plugin(datePlugin)
     resumeDoc.compute('penn')
 
     // let m = resumeDoc.match("HISTORY").docs;
