@@ -39,9 +39,7 @@ export function extractFeaturesFromResume(rows): CandidateDto {
     // let resumeDoc = nlp(Object.values(rows).join(''))
     resumeDoc.compute('penn')
 
-    // let m = resumeDoc.match("HISTORY").docs;
 
-    // @ts-ignore
     const expectedFeatures = {candidateName: "candidateName", candidateExperience: "candidateExperience"}
     for (const exKey in expectedFeatures) {
         console.log("infeerence for:" + exKey)
@@ -73,10 +71,6 @@ export function extractFeaturesFromResume(rows): CandidateDto {
                     for (let i = 0; i < experienceDateSection.length; i++) {
                         let [companyName, ...dates] = resumeDoc.sentences(experienceDateSection[i]).splitBefore("#Month #Year").out("array")
                         //dates extraction per the employment section
-
-                        // @ts-ignore
-                        // let employmentDate = nlp(dates.join(' ')).dates().get()
-
                         candidateExperience.push({
                             startDate: dates.length == 3 ? dates[0] : nlp(dates.join()).match("#Month #Year").text(),
                             endDate: dates.length == 3 ? dates[2] : 'present',

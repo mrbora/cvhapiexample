@@ -7,7 +7,6 @@ import {extractFeaturesFromResume} from "./textToResumeFeatures";
 
 let rows = {}; // indexed by y-position
 function mergeRow(y) {
-    // @ts-ignore
     try {
         if (rows[y].length > 0) rows[y] = rows[y].join(' ');
         console.log(`->${(rows[y] || [])}<-`);
