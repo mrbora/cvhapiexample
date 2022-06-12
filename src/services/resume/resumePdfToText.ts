@@ -48,7 +48,13 @@ export async function resumeFeaturesExtractor(bufferPDF): Promise<CandidateDto |
                     }
                 } else if (item.text) {
                     // accumulate text items into rows object, per line
-                    (rows[item.y] = rows[item.y] || []).push(item.text);
+                    try {
+                        (rows[item.y] = rows[item.y] || []).push(item.text);
+                    }
+                    catch (e)
+                    {
+                        console.error("can't push rows:"+e.message)
+                    }
                 } else {
                     console.dir("<==>");
                 }
