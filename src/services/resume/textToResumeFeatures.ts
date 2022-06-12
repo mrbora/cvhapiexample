@@ -72,28 +72,32 @@ export function extractFeaturesFromResume(rows): CandidateDto {
                 break
             // populate candidate experience
             case expectedFeatures.candidateExperience:
-                let arrayOfDatesPositions: number[] = [];
-                let currentParagraphPosition: number = <number>(resumeDoc.match("HISTORY").pointer?.at(0)!).at(0)
-                let experienceDateSection = getRelativeDatesPosition(currentParagraphPosition, resumeDoc, arrayOfDatesPositions);
-                for (let i = 0; i < experienceDateSection.length; i++) {
-                    let [companyName, ...dates] = resumeDoc.sentences(experienceDateSection[i]).splitBefore("#Month #Year").out("array")
-                    //dates extraction per the employment section
+                try {
+                    let arrayOfDatesPositions: number[] = [];
+                    let currentParagraphPosition: number = <number>(resumeDoc.match("HISTORY").pointer?.at(0)!).at(0)
+                    let experienceDateSection = getRelativeDatesPosition(currentParagraphPosition, resumeDoc, arrayOfDatesPositions);
+                    for (let i = 0; i < experienceDateSection.length; i++) {
+                        let [companyName, ...dates] = resumeDoc.sentences(experienceDateSection[i]).splitBefore("#Month #Year").out("array")
+                        //dates extraction per the employment section
 
-                    // @ts-ignore
-                    // let employmentDate = nlp(dates.join(' ')).dates().get()
+                        // @ts-ignore
+                        // let employmentDate = nlp(dates.join(' ')).dates().get()
 
-                    candidateExperience.push({
-                        startDate: dates.length==3? dates[0]:nlp(dates.join()).match("#Month #Year").text(),
-                        endDate: dates.length==3 ? dates[2]:'present',
-                        companyName: companyName.slice(0, -2), // clean 2 last trash chars
-                        title: resumeDoc.sentences(experienceDateSection[i] - 1).text(),
-                        description: getJobDescription(experienceDateSection[i] + 1,
-                            i == experienceDateSection.length - 1 ? resumeDoc.document.length : experienceDateSection[i + 1] - 1,
-                            resumeDoc)
+                        candidateExperience.push({
+                            startDate: dates.length == 3 ? dates[0] : nlp(dates.join()).match("#Month #Year").text(),
+                            endDate: dates.length == 3 ? dates[2] : 'present',
+                            companyName: companyName.slice(0, -2), // clean 2 last trash chars
+                            title: resumeDoc.sentences(experienceDateSection[i] - 1).text(),
+                            description: getJobDescription(experienceDateSection[i] + 1,
+                                i == experienceDateSection.length - 1 ? resumeDoc.document.length : experienceDateSection[i + 1] - 1,
+                                resumeDoc)
 
-                    })
+                        })
+                    }
+                } catch (e) {
+                    // prevent node from crashing
+                    console.error(e);
                 }
-
                 break
         }
 
