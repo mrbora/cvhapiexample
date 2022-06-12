@@ -4,7 +4,6 @@ import {
 } from "../../interfaces/dto/CandidateDto";
 import {extractFeaturesFromResume} from "./textToResumeFeatures";
 
-const fs = require('fs')
 
 let rows = {}; // indexed by y-position
 function mergeRow(y) {

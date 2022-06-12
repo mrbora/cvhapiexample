@@ -6,7 +6,7 @@ Implementation based:
 Node.JS = tested on v16.14.0
 HAPI.JS = HTTP framework
 SWAGGER 
-PDF.JS by mozilla and derivatives 
+PDF.JS by mozilla and derivative: pdfreader 
 NLP based on Compromise NLP solution
 
 to start: 
