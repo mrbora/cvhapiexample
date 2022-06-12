@@ -26,16 +26,10 @@ function getJobDescription(strLine: number, endLine: number, resumeDoc: any) {
     return jobDescription
 }
 
-function getCompanyName(sentences: any) {
-    return "";
-}
-
 export function extractFeaturesFromResume(rows): CandidateDto {
     enum ResumeTaxonomy {
         MAX_PER_PERSONAL_INFO = 5,
         PERSONAL_INFO_START = 0,
-        CANDIDATE_POSITION_REL_TO_DATE = -1
-
     }
 
     let candidateInfo: CandidateInfoDto;
